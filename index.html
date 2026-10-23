@@ -89,9 +89,10 @@
         .sol-correct { border-color: var(--accent); }
         .sol-wrong { border-color: var(--danger); }
         
+        /* Mobile View */
         @media (max-width: 768px) {
-            .test-layout { flex-direction: column-reverse; }
-            .sidebar { width: 100%; }
+            .test-layout { flex-direction: column; }
+            .sidebar { width: 100%; margin-bottom: 20px; }
             .test-item { flex-direction: column; text-align: center; gap: 10px; }
         }
 
@@ -128,7 +129,7 @@
             <p style="color: #666; margin-bottom: 20px;">अपनी परीक्षा श्रेणी चुनें:</p>
             
             <div class="dashboard-grid">
-                <!-- UP State Exam (Active - Opens Sub-menu) -->
+                <!-- UP State Exam (Active) -->
                 <div class="category-card" style="border: 2px solid var(--secondary);" onclick="showUPStateMenu()">
                     <h3>🏛️ UP State Exam</h3>
                     <p>UPPET, UP Police, VDO आदि</p>
@@ -172,7 +173,7 @@
                     <button class="btn btn-accent" style="width: auto; margin: 0;" onclick="startTest()">Start Test</button>
                 </div>
 
-                <!-- Test Item 2 (Dummy for future) -->
+                <!-- Test Item 2 (Dummy) -->
                 <div class="test-item" style="opacity: 0.6;">
                     <div class="test-info">
                         <h4>UP Police GK Mock 1</h4>
@@ -293,13 +294,11 @@
 
     function logout() { location.reload(); }
 
-    // Main Dashboard se Sub-Menu me jane ke liye
     function showUPStateMenu() {
         document.getElementById('dashboardScreen').classList.add('hide');
         document.getElementById('subMenuScreen').classList.remove('hide');
     }
 
-    // Sub-Menu se wapas Dashboard me jane ke liye
     function backToDashboard() {
         document.getElementById('subMenuScreen').classList.add('hide');
         document.getElementById('dashboardScreen').classList.remove('hide');
@@ -315,11 +314,20 @@
     }
 
     function startTest() {
+        // Hide Menus, Show Test
         document.getElementById('subMenuScreen').classList.add('hide');
         document.getElementById('testScreen').classList.remove('hide');
 
-        testQuestions = shuffleArray([...questionsData]);
+        // Clear Old Data
+        localStorage.removeItem('tg_answers');
+        localStorage.removeItem('tg_marked');
+        localStorage.removeItem('tg_visited');
+        userAnswers = {};
+        markedForReview = {};
+        visitedQuestions = {};
 
+        // Shuffle Questions & Options
+        testQuestions = shuffleArray([...questionsData]);
         testQuestions = testQuestions.map(q => {
             let originalCorrectText = q.o[q.a];
             let shuffledOptions = shuffleArray([...q.o]);
@@ -327,18 +335,36 @@
             return { q: q.q, o: shuffledOptions, a: newAnswerIndex, s: q.s };
         });
 
-        loadQuestion();
-        buildPalette();
-        startTimer();
-    }
+        currentQIndex = 0;
 
-    // --- TIMER WITH RED ALERT (20% Time Left) ---
-    function startTimer() {
+        // Build Palette
+        const container = document.getElementById('paletteContainer');
+        container.innerHTML = '';
+        testQuestions.forEach((_, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'pallet-btn not-visited';
+            btn.innerText = i + 1;
+            btn.onclick = () => {
+                currentQIndex = i;
+                loadQuestion();
+            };
+            container.appendChild(btn);
+        });
+
+        // Load First Question
+        loadQuestion();
+
+        // Start Timer
+        clearInterval(timerInterval);
+        timeLeft = TOTAL_TIME;
+        const timerEl = document.getElementById('timerDisplay');
+        timerEl.classList.remove('timer-danger');
+        timerEl.innerText = "15:00";
+
         timerInterval = setInterval(() => {
             timeLeft--;
             let m = Math.floor(timeLeft / 60);
             let s = timeLeft % 60;
-            let timerEl = document.getElementById('timerDisplay');
             
             timerEl.innerText = `${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
 
@@ -357,26 +383,14 @@
         }, 1000);
     }
 
-    // --- QUESTION PALETTE LOGIC ---
-    function buildPalette() {
-        const container = document.getElementById('paletteContainer');
-        container.innerHTML = '';
-        testQuestions.forEach((_, i) => {
-            const btn = document.createElement('button');
-            btn.className = 'pallet-btn';
-            btn.innerText = i + 1;
-            btn.onclick = () => {
-                currentQIndex = i;
-                loadQuestion();
-            };
-            container.appendChild(btn);
-        });
-        updatePalette();
-    }
-
+    // --- QUESTION PALETTE UPDATE LOGIC ---
     function updatePalette() {
         const buttons = document.getElementById('paletteContainer').children;
+        if(!buttons) return;
+
         for (let i = 0; i < testQuestions.length; i++) {
+            if(!buttons[i]) continue;
+            
             buttons[i].className = 'pallet-btn'; 
             
             if (userAnswers[i] !== undefined && markedForReview[i]) {
@@ -416,7 +430,6 @@
             
             radio.onchange = () => {
                 userAnswers[currentQIndex] = i;
-                saveToLocalStorage();
                 updatePalette();
             };
             
@@ -433,6 +446,7 @@
             markBtn.classList.remove('marked');
             markBtn.innerText = '⭐ Mark for Review';
         }
+        
         updatePalette();
     }
 
@@ -458,24 +472,7 @@
 
     function clearResponse() {
         delete userAnswers[currentQIndex];
-        saveToLocalStorage();
         loadQuestion();
-    }
-
-    // --- AUTO SAVE ---
-    function saveToLocalStorage() {
-        localStorage.setItem('tg_answers', JSON.stringify(userAnswers));
-        localStorage.setItem('tg_marked', JSON.stringify(markedForReview));
-        localStorage.setItem('tg_visited', JSON.stringify(visitedQuestions));
-    }
-
-    window.onload = () => {
-        let savedAnswers = localStorage.getItem('tg_answers');
-        let savedMarked = localStorage.getItem('tg_marked');
-        let savedVisited = localStorage.getItem('tg_visited');
-        if(savedAnswers) userAnswers = JSON.parse(savedAnswers);
-        if(savedMarked) markedForReview = JSON.parse(savedMarked);
-        if(savedVisited) visitedQuestions = JSON.parse(savedVisited);
     }
 
     // --- SUBMIT TEST ---
@@ -483,9 +480,6 @@
         if(!confirm("क्या आप वाकई टेस्ट सबमिट करना चाहते हैं?")) return;
         
         clearInterval(timerInterval);
-        localStorage.removeItem('tg_answers');
-        localStorage.removeItem('tg_marked');
-        localStorage.removeItem('tg_visited');
 
         document.getElementById('testScreen').classList.add('hide');
         document.getElementById('resultScreen').classList.remove('hide');
