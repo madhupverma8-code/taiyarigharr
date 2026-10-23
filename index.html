@@ -34,6 +34,8 @@
         .logo-text { font-size: 32px; color: var(--primary); font-weight: bold; margin-bottom: 5px; }
         .tagline { color: var(--secondary); font-size: 18px; margin-bottom: 25px; font-weight: 500; }
         input[type="text"], input[type="password"] { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; }
+        .loader { display: none; border: 4px solid #f3f3f3; border-top: 4px solid var(--primary); border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 10px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
         /* Dashboard Categories */
         .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 20px; text-align: left; }
@@ -115,35 +117,32 @@
             <div class="logo-text">🏠 TaiyariGhar</div>
             <div class="tagline">मेहनत आपकी, साथ हमारा</div>
             <p style="margin-bottom: 20px; color: #666;">Student Login</p>
-            <input type="text" id="loginRoll" placeholder="Roll Number (e.g. 1001)">
-            <input type="password" id="loginPass" placeholder="Password (e.g. 1234)">
+            <input type="text" id="loginId" placeholder="Login ID (e.g. TG0001)">
+            <input type="password" id="loginPass" placeholder="Password">
             <button class="btn btn-primary" style="width:100%" onclick="doLogin()">Login</button>
-            <p style="margin-top: 15px; font-size: 12px; color: #999;">*Testing: Roll- 1001, Pass- 1234</p>
+            <div id="loginLoader" class="loader"></div>
         </div>
     </div>
 
-    <!-- 📊 2. MAIN DASHBOARD (Categories) -->
+    <!-- 📊 2. MAIN DASHBOARD -->
     <div id="dashboardScreen" class="container hide">
         <div class="card" style="text-align: left;">
             <h2 style="color: var(--primary);">नमस्ते, <span id="studentName">Student</span>!</h2>
             <p style="color: #666; margin-bottom: 20px;">अपनी परीक्षा श्रेणी चुनें:</p>
             
             <div class="dashboard-grid">
-                <!-- UP State Exam (Active) -->
                 <div class="category-card" style="border: 2px solid var(--secondary);" onclick="showUPStateMenu()">
                     <h3>🏛️ UP State Exam</h3>
                     <p>UPPET, UP Police, VDO आदि</p>
                     <p style="color: var(--primary); font-weight: bold;">Click to View Tests →</p>
                 </div>
 
-                <!-- SSC (Coming Soon) -->
                 <div class="category-card" style="opacity: 0.6;">
                     <h3>📚 SSC</h3>
                     <p>Staff Selection Commission</p>
                     <button class="btn" style="background: #ccc; color: #666; width:100%; margin-top:15px;" disabled>Coming Soon...</button>
                 </div>
 
-                <!-- Railway (Coming Soon) -->
                 <div class="category-card" style="opacity: 0.6;">
                     <h3>🚂 Railway</h3>
                     <p>RRB NTPC & Group D</p>
@@ -155,7 +154,7 @@
         </div>
     </div>
 
-    <!-- 📂 3. SUB-MENU SCREEN (Tests inside UP State Exam) -->
+    <!-- 📂 3. SUB-MENU SCREEN -->
     <div id="subMenuScreen" class="container hide">
         <div class="card" style="text-align: left;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -164,7 +163,6 @@
             </div>
             
             <div class="test-list">
-                <!-- Test Item 1 -->
                 <div class="test-item">
                     <div class="test-info">
                         <h4>UPPET History Previous Year</h4>
@@ -173,7 +171,6 @@
                     <button class="btn btn-accent" style="width: auto; margin: 0;" onclick="startTest()">Start Test</button>
                 </div>
 
-                <!-- Test Item 2 (Dummy) -->
                 <div class="test-item" style="opacity: 0.6;">
                     <div class="test-info">
                         <h4>UP Police GK Mock 1</h4>
@@ -215,11 +212,10 @@
                 <div class="palette-grid" id="paletteContainer"></div>
                 
                 <div style="margin-top: 25px; font-size: 13px; display: flex; flex-direction: column; gap: 8px;">
-                    <div><span style="display:inline-block;width:15px;height:15px;background:var(--accent);border-radius:50%;"></span> Answered (उत्तर दिया)</div>
-                    <div><span style="display:inline-block;width:15px;height:15px;background:var(--danger);border-radius:50%;"></span> Not Answered (नहीं दिया)</div>
-                    <div><span style="display:inline-block;width:15px;height:15px;background:var(--grey);border-radius:50%;"></span> Not Visited (नहीं देखा)</div>
-                    <div><span style="display:inline-block;width:15px;height:15px;background:var(--purple);border-radius:50%;"></span> Marked for Review (मार्क किया)</div>
-                    <div><span style="display:inline-block;width:15px;height:15px;background:var(--purple);border-radius:50%; position:relative; border:1px solid var(--accent);"><span style="position:absolute;bottom:0;right:0;width:8px;height:8px;background:var(--accent);border-radius:50%;"></span></span> Answered & Marked (दोनों)</div>
+                    <div><span style="display:inline-block;width:15px;height:15px;background:var(--accent);border-radius:50%;"></span> Answered</div>
+                    <div><span style="display:inline-block;width:15px;height:15px;background:var(--danger);border-radius:50%;"></span> Not Answered</div>
+                    <div><span style="display:inline-block;width:15px;height:15px;background:var(--grey);border-radius:50%;"></span> Not Visited</div>
+                    <div><span style="display:inline-block;width:15px;height:15px;background:var(--purple);border-radius:50%;"></span> Marked for Review</div>
                 </div>
                 
                 <button class="btn btn-secondary" style="width:100%; margin-top: 25px;" onclick="submitTest()">Submit Test</button>
@@ -238,7 +234,7 @@
                 <p id="finalRank" style="color: var(--secondary); font-weight: bold;">Rank: #1 (Simulated)</p>
             </div>
             
-            <button class="btn btn-primary no-print" style="width: 100%; margin-bottom: 20px;" onclick="window.print()">📄 Download PDF Result (2 Columns)</button>
+            <button class="btn btn-primary no-print" style="width: 100%; margin-bottom: 20px;" onclick="window.print()">📄 Download PDF Result</button>
             
             <h3 style="border-bottom: 2px solid var(--primary); padding-bottom: 10px; margin-bottom: 15px;">Detailed Solutions</h3>
             <div id="solutionsContainer"></div>
@@ -248,22 +244,25 @@
     </div>
 
 <script>
+    // यहाँ आपका Apps Script URL पेस्ट हो चुका है
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby3VenElQe9d0k0fMfSyagaIcYbBbdmkSx9fdCVPmZKrhgyIR9_DY3vuG39R57Wn48/exec"; 
+
     // --- QUESTIONS DATA ---
     const questionsData = [
-        { q: '"पशुपति मुहर" सिंधु घाटी सभ्यता के किस स्थल से मिली है?', o: ["बनवाली", "लोथल", "कालीबंगा", "मोहनजोदड़ो"], a: 3, s: '“पशुपति मुहर” सिंधु घाटी सभ्यता के मोहनजोदड़ो स्थल से मिली है। सैन्धव कालीन मोहनजोदड़ो पाकिस्तान में सिंधु नदी के तट पर अवस्थित है।' },
-        { q: '"बनवाली" — सिंधु घाटी सभ्यता का एक प्रमुख नगर, वर्तमान में भारत के निम्नलिखित में से किस राज्य में स्थित है?', o: ["गुजरात", "मध्य प्रदेश", "राजस्थान", "हरियाणा"], a: 3, s: '“बनवाली” सिंधु-घाटी सभ्यता का प्रमुख स्थल, वर्तमान में भारत के हरियाणा राज्य में स्थित है।' },
-        { q: 'हड़प्पा स्थल की सर्वप्रथम संक्षिप्त खुदाई निम्नलिखित में से किसके द्वारा की गई थी?', o: ["राखालदास बनर्जी", "बी. के. थापर", "सर अलेक्जेंडर कनिंघम", "अर्नेस्ट जे. एच. मैके"], a: 2, s: 'अलेक्जेंडर कनिंघम (1814–1893) भारतीय पुरातत्व सर्वेक्षण (ASI) के प्रमुख संस्थापक थे। उन्होंने 1853 में हड़प्पा से एक मुहर पाई थी।' },
-        { q: 'निम्नलिखित में से किस स्थान पर "पुजारी राजाओं" की मूर्ति मिली थी?', o: ["लोथल", "मोहनजोदड़ो", "कोटदीजी", "हड़प्पा"], a: 1, s: 'सिंधु घाटी सभ्यता के स्थल मोहनजोदड़ो से “पुजारी राजाओं” की मूर्ति मिली थी। मोहनजोदड़ो का अर्थ ‘मृतकों का टीला’ होता है।' },
-        { q: 'हड़प्पा के एक बन्दरगाह का नाम लिखिए।', o: ["लोथल", "नागपट्टनम", "महास्थानगढ़", "सिकंदरिया"], a: 0, s: 'लोथल हड़प्पा कालीन बन्दरगाह है। यह भारत के गुजरात राज्य में भोगवा नदी के तट पर स्थित है।' },
-        { q: 'हड़प्पा सभ्यता के दौरान डांसिंग गर्ल (नर्तकी) की कांस्य प्रतिमा बनाने के लिए किस तकनीक का इस्तेमाल किया गया था?', o: ["पत्थर की नक्काशी", "हाथीदाँत नक्काशी", "लकड़ी की नक्काशी", "मोम लॉस्ट ढलाई (कास्टिंग)"], a: 3, s: 'हड़प्पा सभ्यता के दौरान डांसिंग गर्ल (नर्तकी) की कांस्य प्रतिमा बनाने के लिए मोम लॉस्ट ढलाई (कास्टिंग) तकनीक का प्रयोग किया गया था।' },
-        { q: 'हड़प्पाकाल का कौन-सा नगर, तीन भागों में विभाजित था?', o: ["लोथल", "मोहनजोदड़ो", "कालीबंगा", "धौलावीरा"], a: 3, s: 'हड़प्पाकाल का पुरास्थल धौलावीरा गुजरात के ‘कच्छ के रण’ के मध्य स्थित है। धौलावीरा तीन भागों में विभाजित था — किला, मध्य नगर तथा निचला नगर।' },
-        { q: 'हड़प्पा संस्कृति की मुहर और टेराकोटा कला पर निम्नलिखित में से किस जानवर को दर्शाया नहीं गया था?', o: ["बाघ", "गाय", "गैंडा", "हाथी"], a: 1, s: 'हड़प्पा संस्कृति की मुहर और टेराकोटा कला पर ‘गाय’ को नहीं दर्शाया गया था।' },
-        { q: '‘मोहनजोदड़ो’ शब्द का अर्थ क्या है?', o: ["पसंदीदा शहर", "माउंड ऑफ द डेड (मृतकों का टीला)", "रहने की जगह", "एक बाजार क्षेत्र"], a: 1, s: 'मोहनजोदड़ो शब्द से अभिप्राय ‘मृतकों का टीला’ (Mound of the dead) होता है।' },
+        { q: '"पशुपति मुहर" सिंधु घाटी सभ्यता के किस स्थल से मिली है?', o: ["बनवाली", "लोथल", "कालीबंगा", "मोहनजोदड़ो"], a: 3, s: '“पशुपति मुहर” सिंधु घाटी सभ्यता के मोहनजोदड़ो स्थल से मिली है।' },
+        { q: '"बनवाली" — सिंधु घाटी सभ्यता का एक प्रमुख नगर, वर्तमान में भारत के निम्नलिखित में से किस राज्य में स्थित है?', o: ["गुजरात", "मध्य प्रदेश", "राजस्थान", "हरियाणा"], a: 3, s: '“बनवाली” वर्तमान में भारत के हरियाणा राज्य में स्थित है।' },
+        { q: 'हड़प्पा स्थल की सर्वप्रथम संक्षिप्त खुदाई निम्नलिखित में से किसके द्वारा की गई थी?', o: ["राखालदास बनर्जी", "बी. के. थापर", "सर अलेक्जेंडर कनिंघम", "अर्नेस्ट जे. एच. मैके"], a: 2, s: 'अलेक्जेंडर कनिंघम भारतीय पुरातत्व सर्वेक्षण (ASI) के प्रमुख संस्थापक थे।' },
+        { q: 'निम्नलिखित में से किस स्थान पर "पुजारी राजाओं" की मूर्ति मिली थी?', o: ["लोथल", "मोहनजोदड़ो", "कोटदीजी", "हड़प्पा"], a: 1, s: 'मोहनजोदड़ो से “पुजारी राजाओं” की मूर्ति मिली थी।' },
+        { q: 'हड़प्पा के एक बन्दरगाह का नाम लिखिए।', o: ["लोथल", "नागपट्टनम", "महास्थानगढ़", "सिकंदरिया"], a: 0, s: 'लोथल हड़प्पा कालीन बन्दरगाह है।' },
+        { q: 'हड़प्पा सभ्यता के दौरान डांसिंग गर्ल (नर्तकी) की कांस्य प्रतिमा बनाने के लिए किस तकनीक का इस्तेमाल किया गया था?', o: ["पत्थर की नक्काशी", "हाथीदाँत नक्काशी", "लकड़ी की नक्काशी", "मोम लॉस्ट ढलाई (कास्टिंग)"], a: 3, s: 'मोम लॉस्ट ढलाई (कास्टिंग) तकनीक का प्रयोग किया गया था।' },
+        { q: 'हड़प्पाकाल का कौन-सा नगर, तीन भागों में विभाजित था?', o: ["लोथल", "मोहनजोदड़ो", "कालीबंगा", "धौलावीरा"], a: 3, s: 'धौलावीरा तीन भागों में विभाजित था — किला, मध्य नगर तथा निचला नगर।' },
+        { q: 'हड़प्पा संस्कृति की मुहर और टेराकोटा कला पर निम्नलिखित में से किस जानवर को दर्शाया नहीं गया था?', o: ["बाघ", "गाय", "गैंडा", "हाथी"], a: 1, s: '‘गाय’ को नहीं दर्शाया गया था।' },
+        { q: '‘मोहनजोदड़ो’ शब्द का अर्थ क्या है?', o: ["पसंदीदा शहर", "माउंड ऑफ द डेड (मृतकों का टीला)", "रहने की जगह", "एक बाजार क्षेत्र"], a: 1, s: 'मोहनजोदड़ो का अर्थ ‘मृतकों का टीला’ होता है।' },
         { q: 'सिंधु घाटी सभ्यता के बारे में इनमें से कौन-सा कथन सत्य है?', o: ["सिंधु लोग कपास का उत्पादन करने वाले पहले लोग थे।", "उन्होंने लकड़ी के बक्से में अनाज भण्डारित किया।", "सिंधु घाटी सभ्यता पश्चिम बंगाल तक फैली थी।", "सिंधु लोग घोड़ों को बड़े पैमाने पर पालते थे।"], a: 0, s: 'सिंधु घाटी सभ्यता के निवासी कपास के उत्पादन में संसार भर में प्रथम माने जाते थे।' },
-        { q: 'हड़प्पा सभ्यता के एक हिस्से, लोथल की खुदाई की खोज किसने की थी?', o: ["दया राम साहनी", "राखालदास बनर्जी", "एस. आर. राव", "आर. एस. बिष्ट"], a: 2, s: 'भोगवा नदी (अहमदाबाद, गुजरात) के तट पर स्थित लोथल की खोज सर्वप्रथम एस. आर. राव ने की थी।' },
-        { q: 'सिंधु सभ्यता में घोड़े की अस्थियों का अवशेष कहाँ मिला?', o: ["बनवाली", "चन्हूदड़ो", "सुत्कागेंडोर", "सुरकोटदा"], a: 3, s: 'सुरकोटदा गुजरात के कच्छ जिले में स्थित है, जहाँ से घोड़े की अस्थियाँ प्राप्त हुई हैं।' },
-        { q: 'निम्नलिखित में से कौन-सा सिंधु घाटी की सभ्यता से सम्बन्धित स्थल नहीं है?', o: ["कालीबंगा", "रोपड़", "पाटलिपुत्र", "लोथल"], a: 2, s: 'पाटलिपुत्र की स्थापना हर्यक वंश के शासक उदायिन ने की थी। यह सिंधु घाटी की सभ्यता से सम्बन्धित स्थल नहीं है।' },
-        { q: 'छठी से 14वीं शताब्दी तक निम्नलिखित में से कौन-सा सबसे शक्तिशाली महाजनपद था?', o: ["अंग", "मगध", "वैशाली", "वज्जि"], a: 1, s: 'छठी शताब्दी से 14वीं शताब्दी तक मगध सबसे शक्तिशाली महाजनपद था।' },
+        { q: 'हड़प्पा सभ्यता के एक हिस्से, लोथल की खुदाई की खोज किसने की थी?', o: ["दया राम साहनी", "राखालदास बनर्जी", "एस. आर. राव", "आर. एस. बिष्ट"], a: 2, s: 'लोथल की खोज सर्वप्रथम एस. आर. राव ने की थी।' },
+        { q: 'सिंधु सभ्यता में घोड़े की अस्थियों का अवशेष कहाँ मिला?', o: ["बनवाली", "चन्हूदड़ो", "सुत्कागेंडोर", "सुरकोटदा"], a: 3, s: 'सुरकोटदा से घोड़े की अस्थियाँ प्राप्त हुई हैं।' },
+        { q: 'निम्नलिखित में से कौन-सा सिंधु घाटी की सभ्यता से सम्बन्धित स्थल नहीं है?', o: ["कालीबंगा", "रोपड़", "पाटलिपुत्र", "लोथल"], a: 2, s: 'पाटलिपुत्र सिंधु घाटी की सभ्यता से सम्बन्धित स्थल नहीं है।' },
+        { q: 'छठी से 14वीं शताब्दी तक निम्नलिखित में से कौन-सा सबसे शक्तिशाली महाजनपद था?', o: ["अंग", "मगध", "वैशाली", "वज्जि"], a: 1, s: 'मगध सबसे शक्तिशाली महाजनपद था।' },
         { q: 'निम्न में से सूरसेन महाजनपद की राजधानी कौन-सी थी?', o: ["वैशाली", "काशी", "चंपा", "मथुरा"], a: 3, s: 'सूरसेन महाजनपद की राजधानी मथुरा थी।' }
     ];
 
@@ -278,22 +277,40 @@
     const TOTAL_TIME = 15 * 60; 
     let timeLeft = TOTAL_TIME;
 
-    // --- LOGIN & NAVIGATION ---
-    function doLogin() {
-        const roll = document.getElementById('loginRoll').value;
-        const pass = document.getElementById('loginPass').value;
+    // --- LOGIN SYSTEM (Google Sheet से जुड़ा हुआ) ---
+    async function doLogin() {
+        const id = document.getElementById('loginId').value.trim();
+        const pass = document.getElementById('loginPass').value.trim();
         
-        if(roll === "1001" && pass === "1234") {
-            document.getElementById('loginScreen').classList.add('hide');
-            document.getElementById('dashboardScreen').classList.remove('hide');
-            document.getElementById('studentName').innerText = "Ravi Kumar";
-        } else {
-            alert("गलत रोल नंबर या पासवर्ड! (इस्तेमाल करें: 1001 / 1234)");
+        if(!id || !pass) { alert("कृपया Login ID और Password दोनों भरें!"); return; }
+
+        document.getElementById('loginLoader').style.display = 'block';
+
+        try {
+            const response = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify({ loginId: id, password: pass })
+            });
+            const data = await response.json();
+
+            document.getElementById('loginLoader').style.display = 'none';
+
+            if(data.status === "success") {
+                document.getElementById('loginScreen').classList.add('hide');
+                document.getElementById('dashboardScreen').classList.remove('hide');
+                document.getElementById('studentName').innerText = data.name;
+            } else {
+                alert(data.message);
+            }
+        } catch (error) {
+            document.getElementById('loginLoader').style.display = 'none';
+            alert("सर्वर से कनेक्ट नहीं हो पा रहा है! कृपया URL चेक करें।");
         }
     }
 
     function logout() { location.reload(); }
 
+    // --- NAVIGATION ---
     function showUPStateMenu() {
         document.getElementById('dashboardScreen').classList.add('hide');
         document.getElementById('subMenuScreen').classList.remove('hide');
@@ -314,19 +331,13 @@
     }
 
     function startTest() {
-        // Hide Menus, Show Test
         document.getElementById('subMenuScreen').classList.add('hide');
         document.getElementById('testScreen').classList.remove('hide');
 
-        // Clear Old Data
-        localStorage.removeItem('tg_answers');
-        localStorage.removeItem('tg_marked');
-        localStorage.removeItem('tg_visited');
         userAnswers = {};
         markedForReview = {};
         visitedQuestions = {};
 
-        // Shuffle Questions & Options
         testQuestions = shuffleArray([...questionsData]);
         testQuestions = testQuestions.map(q => {
             let originalCorrectText = q.o[q.a];
@@ -337,7 +348,6 @@
 
         currentQIndex = 0;
 
-        // Build Palette
         const container = document.getElementById('paletteContainer');
         container.innerHTML = '';
         testQuestions.forEach((_, i) => {
@@ -351,10 +361,8 @@
             container.appendChild(btn);
         });
 
-        // Load First Question
         loadQuestion();
 
-        // Start Timer
         clearInterval(timerInterval);
         timeLeft = TOTAL_TIME;
         const timerEl = document.getElementById('timerDisplay');
@@ -365,7 +373,6 @@
             timeLeft--;
             let m = Math.floor(timeLeft / 60);
             let s = timeLeft % 60;
-            
             timerEl.innerText = `${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
 
             if(timeLeft <= (TOTAL_TIME * 0.2)) {
@@ -383,14 +390,13 @@
         }, 1000);
     }
 
-    // --- QUESTION PALETTE UPDATE LOGIC ---
+    // --- PALETTE UPDATE ---
     function updatePalette() {
         const buttons = document.getElementById('paletteContainer').children;
         if(!buttons) return;
 
         for (let i = 0; i < testQuestions.length; i++) {
             if(!buttons[i]) continue;
-            
             buttons[i].className = 'pallet-btn'; 
             
             if (userAnswers[i] !== undefined && markedForReview[i]) {
@@ -451,36 +457,16 @@
     }
 
     // --- ACTIONS ---
-    function nextQuestion() {
-        if (currentQIndex < testQuestions.length - 1) {
-            currentQIndex++;
-            loadQuestion();
-        }
-    }
-
-    function prevQuestion() {
-        if (currentQIndex > 0) {
-            currentQIndex--;
-            loadQuestion();
-        }
-    }
-
-    function toggleMark() {
-        markedForReview[currentQIndex] = !markedForReview[currentQIndex];
-        loadQuestion();
-    }
-
-    function clearResponse() {
-        delete userAnswers[currentQIndex];
-        loadQuestion();
-    }
+    function nextQuestion() { if (currentQIndex < testQuestions.length - 1) { currentQIndex++; loadQuestion(); } }
+    function prevQuestion() { if (currentQIndex > 0) { currentQIndex--; loadQuestion(); } }
+    function toggleMark() { markedForReview[currentQIndex] = !markedForReview[currentQIndex]; loadQuestion(); }
+    function clearResponse() { delete userAnswers[currentQIndex]; loadQuestion(); }
 
     // --- SUBMIT TEST ---
     function submitTest() {
         if(!confirm("क्या आप वाकई टेस्ट सबमिट करना चाहते हैं?")) return;
         
         clearInterval(timerInterval);
-
         document.getElementById('testScreen').classList.add('hide');
         document.getElementById('resultScreen').classList.remove('hide');
 
